@@ -1,0 +1,2 @@
+app-emulation/qemu QEMU_SOFTMMU_TARGETS: x86_64 QEMU_USER_TARGETS: x86_64
+app-emulation/qemu spice gtk usbredir vnc usb vhost-net

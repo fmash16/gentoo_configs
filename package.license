@@ -1,0 +1,14 @@
+# required by linux-firmware (argument)
+=sys-kernel/linux-firmware-20200817 linux-fw-redistributable no-source-code
+# required by discord-bin (argument)
+>=net-im/discord-bin-0.0.10 all-rights-reserved
+# required by net-im/zoom (argument)
+>=net-im/zoom-5.1.412382.0614-r1 all-rights-reserved
+# required by dev-libs/amdgpu-pro-opencl (argument)
+>=dev-libs/amdgpu-pro-opencl-19.30.838629 AMD-GPU-PRO-EULA
+# required by dev-libs/hsa-ext-rocr (argument)
+>=dev-libs/hsa-ext-rocr-1.1.30500.0 AMD-GPU-PRO-EULA
+# required by net-im/teams (argument)
+>=net-im/teams-1.3.00.16851 ms-teams-pre
+# required by virtualbox-bin (argument)
+>=app-emulation/virtualbox-bin-6.1.12.139181 PUEL
