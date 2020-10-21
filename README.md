@@ -36,11 +36,12 @@ mkfs.fat -F 32 /dev/sda2
 We are going to follow the following partitioning scheme for our gentoo
 installation.
 
-Partition   Filesystem  Size  Description
-/dev/sda1   (bootloader)  2M  BIOS boot partition
-/dev/sda2   ext2 (or fat32 if UEFI is being used)   128M  Boot/EFI system partition
-/dev/sda3   (swap)  512M or higher  Swap partition
-/dev/sda4   ext4  Rest of the disk  Root partition 
+Partition |  Filesystem | Size | Description
+--- | --- | ---
+/dev/sda1 |  (bootloader) | 2M | BIOS boot partition
+/dev/sda2 |  ext2 (or fat32 if UEFI is being used) |  128M | Boot/EFI system partition
+/dev/sda3 |  (swap) | 512M or higher | Swap partition
+/dev/sda4 |  ext4 | Rest of the disk | Root partition 
 
 We use cfdisk for partitioning the disk
 
