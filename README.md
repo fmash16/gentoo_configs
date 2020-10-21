@@ -1,6 +1,10 @@
 # gentoo_configs
 Config files for my gentoo installation.
 
+<p align="center">
+  <img src="gentoo.png">
+</p>
+
 # Gentoo Installation
 
 ## Booting
