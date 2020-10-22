@@ -368,6 +368,15 @@ example fstab file can look like
 /dev/cdrom  /mnt/cdrom   auto    noauto,user          0 0
 ```
 
+## Host information
+
+Set a name for your host system
+
+```
+# Set the hostname variable to the selected host name
+hostname="tux"
+```
+
 # The hosts file
 
 Next inform Linux about the network environment. This is defined in /etc/hosts
