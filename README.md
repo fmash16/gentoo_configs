@@ -241,6 +241,35 @@ flags is very important as it gives a lot of control over support for what is
 installed on your system and what is not, and makes your system lightweight.
 
 
+# Using libressl instead of openssl
+
+LibreSSL is a fork of, and drop-in replacement for OpenSSL. It was originally
+a response to the infamous heartbleed vulnerability, which was a serious
+security flaw in one of the most popular SSL providers in use.
+
+Read up the guide on making the switch on
+[gentoowiki(https://wiki.gentoo.org/wiki/Project:LibreSSL)
+
+```bash
+emerge gentoolkit
+equery d openssl
+equery d libressl 
+
+echo 'USE="${USE} libressl"' >> /etc/portage/make.conf
+echo 'CURL_SSL="libressl"' >> /etc/portage/make.conf
+mkdir -p /etc/portage/profile
+echo "-libressl" >> /etc/portage/profile/use.stable.mask
+echo "dev-libs/openssl" >> /etc/portage/package.mask
+echo "dev-libs/libressl" >> /etc/portage/package.accept_keywords 
+
+emerge -f libressl
+emerge -C openssl
+emerge -1q libressl 
+
+emerge -1q openssh wget python:2 python3 iputils
+emerge -q @preserved-rebuild
+```
+
 ## Timezone
 
 ```bash
@@ -285,3 +314,141 @@ Now, reload the environment.
 ```bash
 env-update && source /etc/profile && export PS1="(chroot) ${PS1}"
 ```
+
+# Installing the sources
+
+Now , we need to get a kernel for a system. For amd64-based systems Gentoo
+recommends the sys-kernel/gentoo-sources package. 
+
+```bash
+emerge --ask sys-kernel/gentoo-sources
+ls -l /usr/src/linux
+```
+
+## Manual configuration
+
+## Alternative: Using genkernel
+
+```bash
+emerge --ask sys-kernel/genkernel
+```
+
+Edit the /etc/fstab file and add the following
+
+```bash
+nano -w /etc/fstab
+```
+```
+/dev/sda2 /boot ext2  defaults  0 2
+```
+
+Now we compile the kernel sources using genkernel
+
+```bash
+genkernel all
+ls /boot/vmlinu* /boot/initramfs*
+```
+
+# Installing firmware
+
+```
+emerge --ask sys-kernel/linux-firmware
+```
+
+## Creating the fstab file
+
+Get the disk UUIDs using ```blkid``` and put them in the /etc/fstab file. An
+example fstab file can look like
+
+```
+/dev/sda2   /boot        ext2    defaults,noatime     0 2
+/dev/sda3   none         swap    sw                   0 0
+/dev/sda4   /            ext4    noatime              0 1
+  
+/dev/cdrom  /mnt/cdrom   auto    noauto,user          0 0
+```
+
+# The hosts file
+
+Next inform Linux about the network environment. This is defined in /etc/hosts
+and helps in resolving host names to IP addresses for hosts that aren't
+resolved by the nameserver. 
+
+```
+# This defines the current system and must be set
+127.0.0.1     tux.homenetwork tux localhost
+
+# IPv4 and IPv6 localhost aliases
+127.0.0.1       localhost oculus desktop
+::1             localhost oculus desktop
+
+# Optional definition of extra systems on the network
+192.168.0.5   jenny.homenetwork jenny
+192.168.0.6   benny.homenetwork benny
+```
+
+# Root passwd
+
+Set the root passwd using ```passwd```
+
+## Adding a user for daily use
+
+```bash
+useradd -m -G users,wheel,audio -s /bin/bash larry 
+passwd larry
+```
+
+# Networking setup
+
+## DHCPCD
+
+```bash
+emerge -a dhcpcd
+rc-update add dhcpcd default
+rc-service dhcpcd start
+```
+
+## NetworkManager
+
+Add the following use flag in your ```make.conf``` file
+
+```
+USE="${USE} networkmanager"
+```
+
+```bash
+emerge --ask net-misc/networkmanager
+rc-service NetworkManager start
+rc-update add NetworkManager default
+```
+
+# Installing a bootloader - GRUB2
+
+For EFI users, the following variable must be set in the make.conf file
+
+```bash
+echo 'GRUB_PLATFORMS="efi-64"' >> /etc/portage/make.conf
+emerge --ask --verbose sys-boot/grub:2
+
+grub-install --target=x86_64-efi --efi-directory=/boot
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+# Rebooting the system
+
+```bash
+exit
+cd
+umount -l /mnt/gentoo/dev{/shm,/pts,}
+umount -R /mnt/gentoo
+reboot
+```
+
+
+# Installing Xorg for graphical use
+
+```bash
+emerge -a x11-libs/libX11 x11-base/xorg-server x11-libs/libXrandr x11-libs/libXinerama x11-libs/libXft x11-apps/xinit x11-apps/xrdb x11-apps/mesa-progs x11-apps/xrandr x11-misc/unclutter x11-misc/xclip x11-misc/pcmanfm
+```
+
+> Install xorg with ```-suid```
